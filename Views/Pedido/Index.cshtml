@@ -1,0 +1,51 @@
+@model IEnumerable<PedidoModel>
+@{
+    var cliente = ViewBag.Cliente as ClienteModel;
+    ViewBag.Subtitulo = $"Listagem de Pedidos do cliente <b>{cliente.Nome}</b>";
+}
+
+<header class="d-flex justify-content-between align-items-center">
+    <div>
+        <h1 class="text-primary">@Html.Raw(ViewBag.Subtitulo)</h1>
+    </div>
+    <div>
+        <a asp-action="Cadastrar" class="btn btn-primary" asp-route-cid="@cliente.IdUsuario">Novo Pedido</a>
+    </div>
+</header>
+<hr>
+<partial name="_Mensagem"></partial>
+
+@if (Model.Count() > 0)
+{
+    <table class="table table-striped tabela-pedidos">
+        <thead>
+            <tr>
+                <th>Número</th>
+                <th>Data/Hora Pedido</th>
+                <th>Valor Total</th>
+                <th>Data/Hora Entrega</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pedido in Model)
+            {
+                <tr>
+                    <td>@pedido.IdPedido.ToString("D4")</td>
+                    <td>@(pedido.DataPedido.HasValue ? pedido.DataPedido : "Em aberto")</td>
+                    <td>@pedido.ValorTotal.Value.ToString("C")</td>
+                    <td>@(pedido.DataPedido.HasValue ? pedido.DataPedido : "Não entregue")</td>
+                    <td>
+                        <a asp-action="Excluir" asp-controller="ItemPedido" asp-route-id="@pedido.IdPedido" class="btn btn-sm btn-danger">Itens</a>
+                        <a asp-action="Excluir" asp-route-id="@pedido.IdPedido" class="btn btn-sm btn-danger">Excluir</a>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Não há Pedido cadastrado para este cliente</p>
+}
